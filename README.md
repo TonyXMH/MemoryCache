@@ -1,4 +1,4 @@
-# MemoryCache
+# memory-cache
 
 ##简介
 
