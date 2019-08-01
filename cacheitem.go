@@ -67,7 +67,7 @@ func (item *CacheItem) AccessedCount() int64 {
 }
 
 //以下都是更新操作
-//保活的操作相当于访问一次数据
+//保活的操作,每当Value读取后，都会重置删除定时。
 func (item *CacheItem) KeepAlive() {
 	item.Lock()
 	item.accessedOn = time.Now()

@@ -44,7 +44,7 @@ func (table *CacheTable) AddAddedItem(f func(item *CacheItem)) {
 	table.Unlock()
 }
 
-func (table *CacheTable) RemoveAddedItem(f func(item *CacheItem)) {
+func (table *CacheTable) RemoveAddedItem() {
 	table.Lock()
 	table.addedItem = nil
 	table.Unlock()
@@ -62,7 +62,7 @@ func (table *CacheTable) AddAboutToDeleteItem(f func(item *CacheItem)) {
 	table.Unlock()
 }
 
-func (table *CacheTable) RemoveAboutToDeleteItem(f func(item *CacheItem)) {
+func (table *CacheTable) RemoveAboutToDeleteItem() {
 	table.Lock()
 	table.aboutToDeleteItem = nil
 	table.Unlock()
@@ -183,7 +183,7 @@ func (table *CacheTable) deleteInternal(key interface{}) (*CacheItem, error) {
 			callback(key) //这里的操作可能会有数据一致性的问题吧？
 		}
 	}
-	item.Unlock()
+	item.RUnlock()
 	table.Lock()
 	table.log("Deleting item with key ", key, "created on ", item.createdOn, " and hit ", item.accessedCount, " from table", table.name)
 	delete(table.items, key)
@@ -293,7 +293,7 @@ func (table *CacheTable) MostAccessed(count int)[]*CacheItem {
 
 func (table *CacheTable) log(v ...interface{}) {
 	if table.logger != nil {
-		table.logger.Println(v)
+		table.logger.Println(v...)
 	}
 }
 
